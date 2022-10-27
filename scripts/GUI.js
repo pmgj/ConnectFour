@@ -8,12 +8,12 @@ class GUI {
     play(evt) {
         let td = evt.currentTarget;
         let col = td.cellIndex;
+        let { winner, lastRow } = this.game.move(col);
         let tbody = document.querySelector("tbody");
         let first = tbody.rows[0].cells[col];
         let image = document.createElement("img");
         image.src = `images/${this.game.getTurn()}.svg`;
         first.appendChild(image);
-        let { winner, lastRow } = this.game.move(col);
         let anim = image.animate([{ top: 0 }, { top: `${lastRow * 58}px` }], 1000);
         anim.onfinish = () => tbody.rows[lastRow].cells[col].appendChild(image);
         this.changeMessage(winner);
