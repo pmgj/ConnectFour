@@ -1,0 +1,40 @@
+caption {
+    text-align: center;
+    font-weight: bold;
+    font-size: xx-large;
+    margin-bottom: 1em;
+}
+
+div,
+#message {
+    text-align: center;
+}
+
+#board {
+    margin: 2em auto;
+    border-spacing: 10px;
+    background-color: blue;
+}
+
+#board td {
+    --size: 45px;
+    width: var(--size);
+    height: var(--size);
+    min-width: var(--size);
+    min-height: var(--size);
+    max-width: var(--size);
+    max-height: var(--size);
+    border-radius: var(--size);
+    background-color: white;
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    border: 0;
+    margin: -3px 0 -5px -2px;
+    padding: 0;
+    border: 0;
+    position: relative;
+    animation-timing-function: ease-in;
+}
