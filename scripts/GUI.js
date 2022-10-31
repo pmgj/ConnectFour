@@ -14,8 +14,13 @@ class GUI {
         let image = document.createElement("img");
         image.src = `images/${this.game.getTurn()}.svg`;
         first.appendChild(image);
-        let anim = image.animate([{ top: 0 }, { top: `${lastRow * 58}px` }], 1000);
-        anim.onfinish = () => tbody.rows[lastRow].cells[col].appendChild(image);
+        let size = td.offsetHeight + 10; // Including border spacing
+        let anim = image.animate([{ top: 0 }, { top: `${lastRow * size}px` }], 1000);
+        anim.onfinish = () => {
+            let cell = tbody.rows[lastRow].cells[col];
+            cell.appendChild(image);
+            cell.className = this.game.getTurn();
+        };
         this.changeMessage(winner);
     }
     setMessage(message) {

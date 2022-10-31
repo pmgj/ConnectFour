@@ -1,40 +1,38 @@
 caption {
-    text-align: center;
     font-weight: bold;
     font-size: xx-large;
-    margin-bottom: 1em;
 }
 
-div,
-#message {
+p {
     text-align: center;
 }
 
 #board {
-    margin: 2em auto;
+    margin: 0 auto;
     border-spacing: 10px;
     background-color: blue;
 }
 
-#board td {
-    --size: 45px;
-    width: var(--size);
-    height: var(--size);
-    min-width: var(--size);
-    min-height: var(--size);
-    max-width: var(--size);
-    max-height: var(--size);
-    border-radius: var(--size);
+td {
     background-color: white;
-    margin: 0;
-    padding: 0;
 }
 
 img {
-    border: 0;
-    margin: -3px 0 -5px -2px;
-    padding: 0;
-    border: 0;
+    vertical-align: middle;
     position: relative;
-    animation-timing-function: ease-in;
+}
+
+img, td {
+    --cell-size: 8vmin;
+    border-radius: clamp(30px, var(--cell-size), 50px);
+    width: clamp(30px, var(--cell-size), 50px);
+    height: clamp(30px, var(--cell-size), 50px);
+}
+
+.PLAYER1 {
+    background-color: red;
+}
+
+.PLAYER2 {
+    background-color: yellow;
 }
