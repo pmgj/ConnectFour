@@ -8,18 +8,19 @@ class GUI {
     play(evt) {
         let td = evt.currentTarget;
         let col = td.cellIndex;
+        let turn = this.game.getTurn();
         let { winner, lastRow } = this.game.move(col);
         let tbody = document.querySelector("tbody");
         let first = tbody.rows[0].cells[col];
         let image = document.createElement("img");
-        image.src = `images/${this.game.getTurn()}.svg`;
+        image.src = `images/${turn}.svg`;
         first.appendChild(image);
         let size = td.offsetHeight + 10; // Including border spacing
         let anim = image.animate([{ top: 0 }, { top: `${lastRow * size}px` }], 1000);
         anim.onfinish = () => {
             let cell = tbody.rows[lastRow].cells[col];
             cell.appendChild(image);
-            cell.className = this.game.getTurn();
+            cell.className = turn;
         };
         this.changeMessage(winner);
     }
@@ -32,7 +33,7 @@ class GUI {
         if (objs[m]) {
             this.setMessage(`Game Over! ${objs[m]}`);
         } else {
-            let msgs = { PLAYER1: "Red's turn.", PLAYER2: "Yellows's turn." };
+            let msgs = { PLAYER1: "Red's turn.", PLAYER2: "Yellow's turn." };
             this.setMessage(msgs[this.game.getTurn()]);
         }
     }
