@@ -1,4 +1,5 @@
 import ConnectFour from "./ConnectFour.js";
+import MinimaxPlayer from "./MinimaxPlayer.js";
 
 class GUI {
     constructor() {
@@ -8,6 +9,13 @@ class GUI {
     play(evt) {
         let td = evt.currentTarget;
         let col = td.cellIndex;
+        this.innerPlay(col);
+        setTimeout(() => {
+            let obj = MinimaxPlayer.alphabeta(this.game);
+            this.innerPlay(obj.columnMove);
+        }, 2000);
+    }
+    innerPlay(col) {
         let turn = this.game.getTurn();
         let { winner, lastRow } = this.game.move(col);
         let tbody = document.querySelector("tbody");
@@ -15,6 +23,7 @@ class GUI {
         let image = document.createElement("img");
         image.src = `images/${turn}.svg`;
         first.appendChild(image);
+        let td = document.querySelector("td");
         let size = td.offsetHeight + 10; // Including border spacing
         let anim = image.animate([{ top: 0 }, { top: `${lastRow * size}px` }], 1000);
         anim.onfinish = () => {

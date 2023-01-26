@@ -1,27 +1,25 @@
 import CellState from "./CellState.js";
+import Config from "./Config.js";
 
 export default class MinimaxPlayer {
-    constructor(cols) {
-        this.WINNING_SCORE = 100000;
-        this.cols = cols;
-    }
-    max(x, y) {
+    static max(x, y) {
         return x.score > y.score ? JSON.parse(JSON.stringify(x)) : JSON.parse(JSON.stringify(y))
     }
-    min(x, y) {
+    static min(x, y) {
         return x.score < y.score ? JSON.parse(JSON.stringify(x)) : JSON.parse(JSON.stringify(y));
     }
-    alphabeta(board, depth, a, b, maximizingPlayer) {
+    static alphabeta(board, depth = 4, a = {"score": -9999999}, b = {"score": 9999999}, maximizingPlayer = false) {
         let currentScore = board.getScore();
         let nodes = [];
         //Check all possible moves
         let player = maximizingPlayer ? CellState.PLAYER1 : CellState.PLAYER2;
-        for (let column = 0; column < this.cols; column++) {
+        for (let column = 0; column < board.board[0].length; column++) {
             let nextPossibleBoard = board.placeMove(player, column, true);
             if (nextPossibleBoard) nodes[column] = nextPossibleBoard;
         }
-        let isDrawn = nodes.length == 0;
-        if (depth == 0 || isDrawn || currentScore <= -this.WINNING_SCORE || currentScore >= this.WINNING_SCORE) {
+        // console.log(nodes);
+        let isDrawn = nodes.length === 0;
+        if (depth === 0 || isDrawn || currentScore <= -Config.WINNING_SCORE || currentScore >= Config.WINNING_SCORE) {
             let leaf = {
                 "columnMove": null,
                 "score": currentScore
