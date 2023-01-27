@@ -6,16 +6,14 @@ class GUI {
         this.game = null;
         this.sizes = [{ cols: 5, rows: 4 }, { cols: 6, rows: 5 }, { cols: 7, rows: 6 }, { cols: 8, rows: 7 }, { cols: 9, rows: 7 }, { cols: 10, rows: 7 }, { cols: 8, rows: 8 }];
     }
-    play(evt) {
+    async play(evt) {
         let td = evt.currentTarget;
         let col = td.cellIndex;
-        this.innerPlay(col);
-        setTimeout(() => {
-            let obj = MinimaxPlayer.alphabeta(this.game);
-            this.innerPlay(obj.columnMove);
-        }, 2000);
+        await new Promise(resolve => this.innerPlay(col, resolve));
+        let obj = MinimaxPlayer.alphabeta(this.game);
+        this.innerPlay(obj.columnMove);
     }
-    innerPlay(col) {
+    innerPlay(col, resolve) {
         let turn = this.game.getTurn();
         let { winner, lastRow } = this.game.move(col);
         let tbody = document.querySelector("tbody");
@@ -30,6 +28,7 @@ class GUI {
             let cell = tbody.rows[lastRow].cells[col];
             cell.appendChild(image);
             cell.className = turn;
+            resolve(true);
         };
         this.changeMessage(winner);
     }
@@ -41,6 +40,7 @@ class GUI {
         let objs = { DRAW: "Draw!", PLAYER2: "Yellow's win!", PLAYER1: "Red's win!" };
         if (objs[m]) {
             this.setMessage(`Game Over! ${objs[m]}`);
+            this.unregisterEvents();
         } else {
             let msgs = { PLAYER1: "Red's turn.", PLAYER2: "Yellow's turn." };
             this.setMessage(msgs[this.game.getTurn()]);
@@ -62,6 +62,10 @@ class GUI {
             }
         }
         this.changeMessage();
+    }
+    unregisterEvents() {
+        let tds = document.querySelectorAll("td");
+        tds.forEach(td => td.onclick = undefined);
     }
     registerEvents() {
         let select = document.querySelector("select");
