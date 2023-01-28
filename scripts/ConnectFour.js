@@ -101,8 +101,7 @@ export default class ConnectFour {
         let score = 0;
         let updateScore = (HumanInRow, ComputerInRow) => {
             let map = { 4: Config.WINNING_SCORE, 3: 5, 2: 1, 1: 0, 0: 0 };
-            let points = map[HumanInRow] - map[ComputerInRow];
-            return points;
+            return map[HumanInRow] - map[ComputerInRow];
         };
         //Check ROWS
         for (let row = 0; row < this.rows; row++) {
