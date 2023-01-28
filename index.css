@@ -22,7 +22,8 @@ img {
     position: relative;
 }
 
-img, td {
+img,
+td {
     --cell-size: 8vmin;
     border-radius: clamp(30px, var(--cell-size), 50px);
     width: clamp(30px, var(--cell-size), 50px);

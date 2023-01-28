@@ -11,6 +11,7 @@ export default class ConnectFour {
         this.qtt = qtt;
         this.board = Array(rows).fill().map(() => Array(cols).fill(CellState.EMPTY));
         this.turn = Player.PLAYER1;
+        this.winner = Winner.NONE;
     }
     static createClass(board, qtt = 4) {
         let cf = new ConnectFour(board.length, board[0].length, qtt);
@@ -30,12 +31,16 @@ export default class ConnectFour {
         if (column < 0 || column > this.cols - 1) {
             throw new Error("This column is not in the board.");
         }
+        if (this.winner !== Winner.NONE) {
+            throw new Error("This game has already finished.");
+        }
         let r;
         for (r = 0; r < this.rows && this.board[r][column] === CellState.EMPTY; r++)
             ;
         this.board[r - 1][column] = this.turn === Player.PLAYER1 ? CellState.PLAYER1 : CellState.PLAYER2;
-        this.turn = this.turn === Player.PLAYER1 ? CellState.PLAYER2 : CellState.PLAYER1;
+        this.turn = this.turn === Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1;
         let obj = this.endOfGame();
+        this.winner = obj.winner;
         obj.lastRow = r - 1;
         return obj;
     }
@@ -77,10 +82,13 @@ export default class ConnectFour {
                 }
             }
         }
+        if (matrix[0].every(v => v !== CellState.EMPTY)) {
+            return { sequence: null, winner: Winner.DRAW };
+        }
         return { sequence: null, winner: Winner.NONE };
     }
-    placeMove(player, columnMove, newBoard) {
-        let temp = newBoard ? ConnectFour.createClass(this.board) : this;
+    placeMove(player, columnMove) {
+        let temp = ConnectFour.createClass(this.board);
         for (let i = this.rows - 1; i >= 0; i--) {
             if (temp.board[i][columnMove] === CellState.EMPTY) {
                 temp.board[i][columnMove] = player;

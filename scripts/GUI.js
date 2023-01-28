@@ -7,30 +7,34 @@ class GUI {
         this.sizes = [{ cols: 5, rows: 4 }, { cols: 6, rows: 5 }, { cols: 7, rows: 6 }, { cols: 8, rows: 7 }, { cols: 9, rows: 7 }, { cols: 10, rows: 7 }, { cols: 8, rows: 8 }];
     }
     async play(evt) {
+        this.unregisterEvents();
         let td = evt.currentTarget;
         let col = td.cellIndex;
-        await new Promise(resolve => this.innerPlay(col, resolve));
+        await this.innerPlay(col);
         let obj = MinimaxPlayer.alphabeta(this.game);
         this.innerPlay(obj.columnMove);
+        this.registerEvents();
     }
-    innerPlay(col, resolve) {
-        let turn = this.game.getTurn();
-        let { winner, lastRow } = this.game.move(col);
-        let tbody = document.querySelector("tbody");
-        let first = tbody.rows[0].cells[col];
-        let image = document.createElement("img");
-        image.src = `images/${turn}.svg`;
-        first.appendChild(image);
-        let td = document.querySelector("td");
-        let size = td.offsetHeight + 10; // Including border spacing
-        let anim = image.animate([{ top: 0 }, { top: `${lastRow * size}px` }], 1000);
-        anim.onfinish = () => {
-            let cell = tbody.rows[lastRow].cells[col];
-            cell.appendChild(image);
-            cell.className = turn;
-            resolve(true);
-        };
-        this.changeMessage(winner);
+    innerPlay(col) {
+        return new Promise(resolve => {
+            let turn = this.game.getTurn();
+            let { winner, lastRow } = this.game.move(col);
+            let tbody = document.querySelector("tbody");
+            let first = tbody.rows[0].cells[col];
+            let image = document.createElement("img");
+            image.src = `images/${turn}.svg`;
+            first.appendChild(image);
+            let td = document.querySelector("td");
+            let size = td.offsetHeight + td.offsetLeft; // Including border spacing
+            let anim = image.animate([{ top: 0 }, { top: `${lastRow * size}px` }], 1000);
+            anim.onfinish = () => {
+                let cell = tbody.rows[lastRow].cells[col];
+                cell.appendChild(image);
+                cell.className = turn;
+                resolve(true);
+            };
+            this.changeMessage(winner);
+        });
     }
     setMessage(message) {
         let msg = document.getElementById("message");
@@ -68,6 +72,10 @@ class GUI {
         tds.forEach(td => td.onclick = undefined);
     }
     registerEvents() {
+        let tds = document.querySelectorAll("td");
+        tds.forEach(td => td.onclick = this.play.bind(this));
+    }
+    init() {
         let select = document.querySelector("select");
         for (let { rows, cols } of this.sizes) {
             let opt = document.createElement("option");
@@ -82,4 +90,4 @@ class GUI {
     }
 }
 let gui = new GUI();
-gui.registerEvents();
+gui.init();
