@@ -100,35 +100,10 @@ export default class ConnectFour {
     getScore() {
         let score = 0;
         let updateScore = (HumanInRow, ComputerInRow) => {
-            let points = 0;
-            switch (HumanInRow) {
-                case 4:
-                    points += Config.WINNING_SCORE;
-                    break;
-                case 3:
-                    points += 5;
-                    break;
-                case 2:
-                    points += 1;
-                    break;
-                default:
-                    break;
-            }
-            switch (ComputerInRow) {
-                case 4:
-                    points -= Config.WINNING_SCORE;
-                    break;
-                case 3:
-                    points -= 5;
-                    break;
-                case 2:
-                    points -= 1;
-                    break;
-                default:
-                    break;
-            }
+            let map = { 4: Config.WINNING_SCORE, 3: 5, 2: 1, 1: 0, 0: 0 };
+            let points = map[HumanInRow] - map[ComputerInRow];
             return points;
-        }
+        };
         //Check ROWS
         for (let row = 0; row < this.rows; row++) {
             for (let column = 0; column <= this.cols - 4; column++) {
