@@ -103,71 +103,45 @@ export default class ConnectFour {
             let map = [0, 0, 1, 5, Config.WINNING_SCORE];
             return map[HumanInRow] - map[ComputerInRow];
         };
+        let check = (a, b, f, g) => {
+            let HumanInRow = 0, ComputerInRow = 0;
+            for (let offset = a; offset < a + 4; offset++) {
+                if (this.board[g(b, offset)][f(a, b, offset)] == CellState.PLAYER1) {
+                    HumanInRow++;
+                    ComputerInRow = 0;
+                } else if (this.board[g(b, offset)][f(a, b, offset)] == CellState.PLAYER2) {
+                    ComputerInRow++;
+                    HumanInRow = 0;
+                }
+            }
+            score += updateScore(HumanInRow, ComputerInRow);
+            if (score <= -Config.WINNING_SCORE || score >= Config.WINNING_SCORE) return score;
+        };
         //Check ROWS
         for (let row = 0; row < this.rows; row++) {
             for (let column = 0; column <= this.cols - 4; column++) {
-                let HumanInRow = 0, ComputerInRow = 0;
-                for (let offset = column; offset < column + 4; offset++) {
-                    if (this.board[row][offset] == CellState.PLAYER1) {
-                        HumanInRow++;
-                        ComputerInRow = 0;
-                    } else if (this.board[row][offset] == CellState.PLAYER2) {
-                        ComputerInRow++;
-                        HumanInRow = 0;
-                    }
-                }
-                score += updateScore(HumanInRow, ComputerInRow);
-                if (score <= -Config.WINNING_SCORE || score >= Config.WINNING_SCORE) return score;
+                let v = check(column, row, (a, b, c) => c, (a, b) => a);
+                if(v) return v;
             }
         }
         //Check COLUMNS
         for (let column = 0; column < this.cols; column++) {
             for (let row = 0; row <= this.rows - 4; row++) {
-                let HumanInRow = 0, ComputerInRow = 0;
-                for (let offset = row; offset < row + 4; offset++) {
-                    if (this.board[offset][column] == CellState.PLAYER1) {
-                        HumanInRow++;
-                        ComputerInRow = 0;
-                    } else if (this.board[offset][column] == CellState.PLAYER2) {
-                        ComputerInRow++;
-                        HumanInRow = 0;
-                    }
-                }
-                score += updateScore(HumanInRow, ComputerInRow);
-                if (score <= -Config.WINNING_SCORE || score >= Config.WINNING_SCORE) return score;
+                let v = check(row, column, (a, b, c) => b, (a, b) => b);
+                if(v) return v;
             }
         }
         //Check DIAGONALS
         for (let column = 0; column <= this.cols - 4; column++) {
             for (let row = 0; row <= this.rows - 4; row++) {
-                let HumanInRow = 0, ComputerInRow = 0;
-                for (let offset = row; offset < row + 4; offset++) {
-                    if (this.board[offset][(offset - row) + column] == CellState.PLAYER1) {
-                        HumanInRow++;
-                        ComputerInRow = 0;
-                    } else if (this.board[offset][(offset - row) + column] == CellState.PLAYER2) {
-                        ComputerInRow++;
-                        HumanInRow = 0;
-                    }
-                }
-                score += updateScore(HumanInRow, ComputerInRow);
-                if (score <= -Config.WINNING_SCORE || score >= Config.WINNING_SCORE) return score;
+                let v = check(row, column, (a, b, c) => (c - a) + b, (a, b) => b);
+                if(v) return v;
             }
         }
         for (let column = this.cols - 1; column >= this.cols - 4; column--) {
             for (let row = 0; row <= this.rows - 4; row++) {
-                let HumanInRow = 0, ComputerInRow = 0;
-                for (let offset = row; offset < row + 4; offset++) {
-                    if (this.board[offset][column - (offset - row)] == CellState.PLAYER1) {
-                        HumanInRow++;
-                        ComputerInRow = 0;
-                    } else if (this.board[offset][column - (offset - row)] == CellState.PLAYER2) {
-                        ComputerInRow++;
-                        HumanInRow = 0;
-                    }
-                }
-                score += updateScore(HumanInRow, ComputerInRow);
-                if (score <= -Config.WINNING_SCORE || score >= Config.WINNING_SCORE) return score;
+                let v = check(row, column, (a, b, c) => b - (c - a), (a, b) => b);
+                if(v) return v;
             }
         }
         return score;
