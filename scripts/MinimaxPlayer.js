@@ -2,7 +2,7 @@ import CellState from "./CellState.js";
 import Config from "./Config.js";
 
 export default class MinimaxPlayer {
-    static alphabeta(board, depth = 4, a = { score: -9999999 }, b = { score: 9999999 }, maximizingPlayer = false) {
+    static alphabeta(board, depth = 4, a = -9999999, b = 9999999, maximizingPlayer = false) {
         let currentScore = board.getScore();
         let nodes = [];
         //Check all possible moves
@@ -11,8 +11,7 @@ export default class MinimaxPlayer {
             let nextPossibleBoard = board.placeMove(player, column);
             if (nextPossibleBoard) nodes[column] = nextPossibleBoard;
         }
-        let isDrawn = nodes.length === 0;
-        if (depth === 0 || isDrawn || currentScore <= -Config.WINNING_SCORE || currentScore >= Config.WINNING_SCORE) {
+        if (depth === 0 || nodes.length === 0 || currentScore <= -Config.WINNING_SCORE || currentScore >= Config.WINNING_SCORE) {
             return { columnMove: null, score: currentScore };
         }
         if (maximizingPlayer) {
@@ -24,8 +23,8 @@ export default class MinimaxPlayer {
                     v.columnMove = i;
                     v.score = nextmove.score;
                 }
-                a = a.score > nextmove.score ? JSON.parse(JSON.stringify(a)) : JSON.parse(JSON.stringify(nextmove));
-                if (b.score <= a.score) {
+                a = a > nextmove.score ? a : nextmove.score;
+                if (b <= a) {
                     break; //(* b cut-off *)
                 }
             };
@@ -39,8 +38,8 @@ export default class MinimaxPlayer {
                     v.columnMove = i;
                     v.score = nextmove.score;
                 }
-                b = b.score < nextmove.score ? JSON.parse(JSON.stringify(b)) : JSON.parse(JSON.stringify(nextmove));
-                if (b.score <= a.score) {
+                b = b < nextmove.score ? b : nextmove.score;
+                if (b <= a) {
                     break; //(* a cut-off *)
                 }
             };
